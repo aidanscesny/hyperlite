@@ -1,0 +1,13 @@
+# Rust build artifacts
+/target/
+
+# Hyperlite generated artifacts
+/out/
+
+# IDEA
+.idea/
+
+# Other junk
+*.swp
+*~
+.DS_Store
