@@ -75,6 +75,7 @@ sleep 1
 "${ROOT_DIR}/build/scripts/userspace.sh" "${BUILD_MODE}"
 "${ROOT_DIR}/build/scripts/kernel.sh" "${JOBS}"
 "${ROOT_DIR}/build/scripts/initramfs.sh" "${BUILD_MODE}"
+"${ROOT_DIR}/build/scripts/iso.sh"
 
 echo
 echo "Build complete"
