@@ -9,13 +9,15 @@ BUILD_MODE=$1
 
 INIT_BINARY="${ROOT_DIR}/target/x86_64-unknown-linux-musl/${BUILD_MODE}/hyperlite-init"
 
-echo "Creating initramfs..."
+echo "[+] Creating initramfs..."
 
 rm -rf "${ROOTFS_DIR}"
 mkdir -p "${ROOTFS_DIR}"
 
 cp "${INIT_BINARY}" "${ROOTFS_DIR}/init"
 chmod +x "${ROOTFS_DIR}/init"
+
+mkdir "${ROOTFS_DIR}/proc"
 
 (
     cd "${ROOTFS_DIR}"
@@ -24,4 +26,4 @@ chmod +x "${ROOTFS_DIR}/init"
         | gzip -9
 ) > "${OUT_DIR}/initramfs.img"
 
-echo "Created ${OUT_DIR}/initramfs.img"
+echo "[+] Created ${OUT_DIR}/initramfs.img"

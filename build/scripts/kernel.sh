@@ -18,31 +18,31 @@ KERNEL_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/${KERNEL_ARCHIVE}"
 mkdir -p "${DOWNLOAD_DIR}" "${SRC_DIR}" "${OUT_DIR}/kernel"
 
 if [[ ! -f "${DOWNLOAD_DIR}/${KERNEL_ARCHIVE}" ]]; then
-    echo "Downloading Linux ${LINUX_VERSION}..."
+    echo "[+] Downloading Linux ${LINUX_VERSION}..."
     curl -L \
         "${KERNEL_URL}" \
         -o "${DOWNLOAD_DIR}/${KERNEL_ARCHIVE}"
 fi
 
 if [[ ! -d "${KERNEL_SRC}" ]]; then
-    echo "Extracting Linux ${LINUX_VERSION}..."
+    echo "[+] Extracting Linux ${LINUX_VERSION}..."
 
     tar -xf "${DOWNLOAD_DIR}/${KERNEL_ARCHIVE}" \
         -C "${SRC_DIR}"
 fi
 
-echo "Configuring Linux ${LINUX_VERSION}..."
+echo "[+] Configuring Linux ${LINUX_VERSION}..."
 
 cp "${ROOT_DIR}/build/config/kernel.config" \
    "${KERNEL_SRC}/.config"
 
 make -C "${KERNEL_SRC}" olddefconfig
 
-echo "Building Linux ${LINUX_VERSION}..."
+echo "[+] Building Linux ${LINUX_VERSION}..."
 
 make -C "${KERNEL_SRC}" -j"${COMPILE_CORES}"
 
 cp "${KERNEL_SRC}/arch/x86/boot/bzImage" \
    "${OUT_DIR}/kernel/bzImage"
 
-echo "Kernel built: ${OUT_DIR}/kernel/bzImage"
+echo "[+] Kernel built: ${OUT_DIR}/kernel/bzImage"

@@ -8,7 +8,7 @@ OUT_DIR="${ROOT_DIR}/out"
 ISO_ROOT="${OUT_DIR}/iso"
 ISO_FILE="${OUT_DIR}/hyperlite-x86_64.iso"
 
-echo "Creating bootable ISO..."
+echo "[+] Creating bootable ISO..."
 
 rm -rf "${ISO_ROOT}"
 
@@ -27,4 +27,4 @@ grub2-mkrescue \
     -o "${ISO_FILE}" \
     "${ISO_ROOT}"
 
-echo "ISO created: ${ISO_FILE}"
+echo "[+] ISO created: ${ISO_FILE}"

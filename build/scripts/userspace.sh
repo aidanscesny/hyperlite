@@ -6,7 +6,7 @@ BUILD_MODE="$1"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-echo "Building Hyperlite userspace (${BUILD_MODE})..."
+echo "[+] Building Hyperlite userspace (${BUILD_MODE})..."
 
 if [[ "${BUILD_MODE}" == "release" ]]; then
     cargo build \
@@ -19,4 +19,4 @@ else
         --target x86_64-unknown-linux-musl
 fi
 
-echo "Userspace built."
+echo "[+] Userspace built"
