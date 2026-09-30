@@ -36,31 +36,12 @@ fn get_str_from_fd(fd: &OwnedFd) -> Result<String, Box<dyn Error>> {
 	let mut vec = Vec::<u8>::new();
 
 	loop {
-		let result = io::read(fd, &mut buf);
-
-		match result {
-			Ok(bytes_read) => {
-				vec.extend_from_slice(&buf[..bytes_read]);
-				if bytes_read == 0 { break; }
-			}
-
-			Err(error) => {
-				return Err(Box::from(error))
-			}
-		}
+		let bytes_read = io::read(fd, &mut buf)?;
+		vec.extend_from_slice(&buf[..bytes_read]);
+		if bytes_read == 0 { break; }
 	}
-
-	let ret = String::from_utf8(vec);
-
-	match ret {
-		Ok(str) => {
-			Ok(str)
-		}
-
-		Err(error) => {
-			Err(Box::from(error))
-		}
-	}
+	
+	Ok(String::from_utf8(vec)?)
 }
 
 fn flex_on_user() {
@@ -78,7 +59,7 @@ fn flex_on_user() {
 		}
 
 		Err(error) => {
-
+			println!("[-] Failed to parse kernel version: {}", error.to_string())
 		}
 	}
 
@@ -93,7 +74,7 @@ fn flex_on_user() {
 		}
 
 		Err(error) => {
-
+			println!("[-] Failed to parse kernel memory: {}", error.to_string())
 		}
 	}
 }
