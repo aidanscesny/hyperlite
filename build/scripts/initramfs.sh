@@ -19,6 +19,8 @@ chmod +x "${ROOTFS_DIR}/init"
 
 mkdir "${ROOTFS_DIR}/proc"
 
+mkdir "${ROOTFS_DIR}/sys"
+
 (
     cd "${ROOTFS_DIR}"
     find . -print0 \
