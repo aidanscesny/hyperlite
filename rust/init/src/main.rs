@@ -25,7 +25,7 @@ fn main() {
 fn early_boot() {
 	match filesystem::mount_proc() {
 		Ok(()) => {
-			println!("[+] Proc mounted at /proc");
+			println!("[+] proc mounted at /proc");
 		}
 
 		Err(error) => {
@@ -37,11 +37,28 @@ fn early_boot() {
 
 	match filesystem::mount_sysfs() {
 		Ok(()) => {
-			println!("[+] Sysfs mounted at /sys");
+			println!("[+] sysfs mounted at /sys");
 		}
 
 		Err(error) => {
 			println!("[!] Failed to mount /proc");
+			println!("[!] Error: {}", error.to_string());
+			println!("[?] Press Enter to power-off.");
+			let mut input = String::new();
+			std::io::stdin()
+				.read_line(&mut input)
+				.expect("[!] Failed to read input");
+			graceful_shutdown();
+		}
+	}
+
+	match filesystem::mount_devtmpfs() {
+		Ok(()) => {
+			println!("[+] devtmpfs mounted at /dev");
+		}
+
+		Err(error) => {
+			println!("[!] Failed to mount /dev");
 			println!("[!] Error: {}", error.to_string());
 			println!("[?] Press Enter to power-off.");
 			let mut input = String::new();

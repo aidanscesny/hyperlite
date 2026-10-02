@@ -21,6 +21,8 @@ mkdir "${ROOTFS_DIR}/proc"
 
 mkdir "${ROOTFS_DIR}/sys"
 
+mkdir "${ROOTFS_DIR}/dev"
+
 (
     cd "${ROOTFS_DIR}"
     find . -print0 \

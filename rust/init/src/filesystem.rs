@@ -22,6 +22,16 @@ pub fn mount_sysfs() -> Result<(), Box<dyn Error>> {
     )?)
 }
 
+pub fn mount_devtmpfs() -> Result<(), Box<dyn Error>> {
+    Ok(mount::mount(
+        c"devtmpfs",
+        c"/dev",
+        c"devtmpfs",
+        mount::MountFlags::empty(),
+        c""
+    )?)
+}
+
 pub fn get_str_from_fd(fd: &OwnedFd) -> Result<String, Box<dyn Error>> {
     let mut buf = [0_u8; 64];
     let mut vec = Vec::<u8>::new();
