@@ -6,7 +6,6 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OUT_DIR="${ROOT_DIR}/out"
 ROOTFS_DIR="${OUT_DIR}/rootfs"
 BUILD_MODE=$1
-
 INIT_BINARY="${ROOT_DIR}/target/x86_64-unknown-linux-musl/${BUILD_MODE}/hyperlite-init"
 
 echo "[+] Creating initramfs..."
@@ -18,10 +17,9 @@ cp "${INIT_BINARY}" "${ROOTFS_DIR}/init"
 chmod +x "${ROOTFS_DIR}/init"
 
 mkdir "${ROOTFS_DIR}/proc"
-
 mkdir "${ROOTFS_DIR}/sys"
-
 mkdir "${ROOTFS_DIR}/dev"
+mkdir -p "${ROOTFS_DIR}/system/bin"
 
 (
     cd "${ROOTFS_DIR}"
