@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn early_boot() {
-	match filesystem::mount_fs("proc", "/proc") {
+	match filesystem::mount_fs(c"proc", c"/proc") {
 		Ok(()) => {
 			println!("[+] proc mounted at /proc");
 		}
