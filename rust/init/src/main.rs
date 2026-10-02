@@ -6,20 +6,22 @@ const CLEAR_TERM: &str = "\x1b[2J\x1b[H";
 fn main() {
 	println!("{}", CLEAR_TERM);
 	println!("####################");
-	println!("# Hyperlite v0.0.2 #");
+	println!("# Hyperlite v{} #", env!("CARGO_PKG_VERSION"));
 	println!("####################");
 
 	early_boot();
-
 	flex_on_user();
+	spawn_child();
+	wait_for_user();
+	graceful_shutdown();
+}
 
+fn wait_for_user() {
 	println!("[?] Press Enter to power-off.");
 	let mut input = String::new();
 	std::io::stdin()
 		.read_line(&mut input)
 		.expect("[!] Failed to read input");
-
-	graceful_shutdown();
 }
 
 fn early_boot() {
@@ -41,7 +43,7 @@ fn early_boot() {
 		}
 
 		Err(error) => {
-			println!("[!] Failed to mount /proc");
+			println!("[!] Failed to mount /sys");
 			println!("[!] Error: {}", error.to_string());
 			println!("[?] Press Enter to power-off.");
 			let mut input = String::new();
@@ -95,6 +97,36 @@ fn flex_on_user() {
 
 		Err(error) => {
 			println!("[!] Failed to parse /dev: {}", error.to_string())
+		}
+	}
+}
+
+fn spawn_child() {
+	match std::process::Command::new("/system/bin/hyperlite-testd").spawn()
+	{
+		Ok(mut res) => {
+			println!("[+] Spawned child: {}", res.id());
+			loop {
+				match res.try_wait() {
+					Ok(None) => {
+						std::thread::sleep(std::time::Duration::new(1, 0));
+					}
+
+					Ok(Some(status)) => {
+						println!("[+] Child exited status {}", status.to_string());
+						break;
+					}
+
+					Err(error) => {
+						println!("[!] Error with child: {}", error.to_string());
+						break;
+					}
+				}
+			}
+		}
+
+		Err(error) => {
+			println!("[!] Failed to spawn child: {}", error.to_string())
 		}
 	}
 }
