@@ -88,6 +88,15 @@ fn flex_on_user() {
 			println!("[-] Failed to parse kernel version: {}", error.to_string())
 		}
 	}
+
+	// Print out dev
+	match filesystem::print_dir("/dev") {
+		Ok(()) => {}
+
+		Err(error) => {
+			println!("[!] Failed to parse /dev: {}", error.to_string())
+		}
+	}
 }
 
 fn graceful_shutdown() {

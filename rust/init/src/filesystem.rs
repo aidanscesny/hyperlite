@@ -2,6 +2,7 @@ use std::error::Error;
 use std::ffi::CStr;
 use std::os::fd::OwnedFd;
 use rustix::{io, mount};
+use rustix::path::Arg;
 
 pub fn mount_fs(src: &CStr, target: &CStr) -> Result<(), Box<dyn Error>> {
     Ok(mount::mount(
@@ -24,4 +25,12 @@ pub fn get_str_from_fd(fd: &OwnedFd) -> Result<String, Box<dyn Error>> {
     }
 
     Ok(String::from_utf8(vec)?)
+}
+
+pub fn print_dir(dir: &str) -> Result<(), Box<dyn Error>>{
+    for entry in std::fs::read_dir(dir)? {
+        println!("[+] Discovered: {}", entry?.path().to_string_lossy());
+    }
+
+    Ok(())
 }
