@@ -2,18 +2,24 @@ use std::error::Error;
 use std::os::fd::OwnedFd;
 use rustix::{io, mount};
 
-pub fn mount_proc() {
-    let mount_flags = mount::MountFlags::empty();
-
-    mount::mount(c"proc", c"/proc",c"proc",mount_flags,c"").
-        expect("Kernel should mount proc at boot");
+pub fn mount_proc() -> Result<(), Box<dyn Error>> {
+    Ok(mount::mount(
+        c"proc",
+        c"/proc",
+        c"proc",
+        mount::MountFlags::empty(),
+        c""
+        )?)
 }
 
-pub fn mount_sysfs() {
-    let mount_flags = mount::MountFlags::empty();
-
-    mount::mount(c"sysfs", c"/sys",c"sysfs",mount_flags,c"").
-        expect("Kernel should mount sysfs at boot");
+pub fn mount_sysfs() -> Result<(), Box<dyn Error>> {
+    Ok(mount::mount(
+        c"sysfs",
+        c"/sys",
+        c"sysfs",
+        mount::MountFlags::empty(),
+        c""
+    )?)
 }
 
 pub fn get_str_from_fd(fd: &OwnedFd) -> Result<String, Box<dyn Error>> {
