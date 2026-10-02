@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn early_boot() {
-	match filesystem::mount_proc() {
+	match filesystem::mount_fs("proc", "/proc") {
 		Ok(()) => {
 			println!("[+] proc mounted at /proc");
 		}
@@ -35,7 +35,7 @@ fn early_boot() {
 		}
 	}
 
-	match filesystem::mount_sysfs() {
+	match filesystem::mount_fs(c"sysfs", c"/sys") {
 		Ok(()) => {
 			println!("[+] sysfs mounted at /sys");
 		}
@@ -52,7 +52,7 @@ fn early_boot() {
 		}
 	}
 
-	match filesystem::mount_devtmpfs() {
+	match filesystem::mount_fs(c"devtmpfs", c"/dev") {
 		Ok(()) => {
 			println!("[+] devtmpfs mounted at /dev");
 		}

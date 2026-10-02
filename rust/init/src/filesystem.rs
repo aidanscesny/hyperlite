@@ -1,32 +1,13 @@
 use std::error::Error;
+use std::ffi::CStr;
 use std::os::fd::OwnedFd;
 use rustix::{io, mount};
 
-pub fn mount_proc() -> Result<(), Box<dyn Error>> {
+pub fn mount_fs(src: &CStr, target: &CStr) -> Result<(), Box<dyn Error>> {
     Ok(mount::mount(
-        c"proc",
-        c"/proc",
-        c"proc",
-        mount::MountFlags::empty(),
-        c""
-        )?)
-}
-
-pub fn mount_sysfs() -> Result<(), Box<dyn Error>> {
-    Ok(mount::mount(
-        c"sysfs",
-        c"/sys",
-        c"sysfs",
-        mount::MountFlags::empty(),
-        c""
-    )?)
-}
-
-pub fn mount_devtmpfs() -> Result<(), Box<dyn Error>> {
-    Ok(mount::mount(
-        c"devtmpfs",
-        c"/dev",
-        c"devtmpfs",
+        src,
+        target,
+        src,
         mount::MountFlags::empty(),
         c""
     )?)
