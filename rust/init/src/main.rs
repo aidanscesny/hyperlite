@@ -9,11 +9,7 @@ fn main() {
 	println!("# Hyperlite v0.0.2 #");
 	println!("####################");
 
-	filesystem::mount_proc();
-	println!("[+] Proc mounted at /proc");
-
-	filesystem::mount_sysfs();
-	println!("[+] Sysfs mounted at /sys");
+	early_boot();
 
 	flex_on_user();
 
@@ -24,6 +20,37 @@ fn main() {
 		.expect("[!] Failed to read input");
 
 	graceful_shutdown();
+}
+
+fn early_boot() {
+	match filesystem::mount_proc() {
+		Ok(()) => {
+			println!("[+] Proc mounted at /proc");
+		}
+
+		Err(error) => {
+			println!("[!] Failed to mount /proc");
+			println!("[!] Error: {}", error.to_string());
+			panic!();
+		}
+	}
+
+	match filesystem::mount_sysfs() {
+		Ok(()) => {
+			println!("[+] Sysfs mounted at /sys");
+		}
+
+		Err(error) => {
+			println!("[!] Failed to mount /proc");
+			println!("[!] Error: {}", error.to_string());
+			println!("[?] Press Enter to power-off.");
+			let mut input = String::new();
+			std::io::stdin()
+				.read_line(&mut input)
+				.expect("[!] Failed to read input");
+			graceful_shutdown();
+		}
+	}
 }
 
 fn flex_on_user() {
@@ -47,7 +74,7 @@ fn flex_on_user() {
 }
 
 fn graceful_shutdown() {
-	println!("[+] Shutting down gracefully.");
+	println!("[+] Shutting down...");
 
 	system::reboot(system::RebootCommand::PowerOff).
 		expect("Expected kernel to accept power-off command");
