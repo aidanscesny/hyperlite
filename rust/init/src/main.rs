@@ -1,27 +1,48 @@
 mod filesystem;
-use rustix::{fs, system};
+mod console;
 
-const CLEAR_TERM: &str = "\x1b[2J\x1b[H";
+use rustix::{fs, system};
+use std::sync::mpsc;
+use std::time::Duration;
+
+#[derive(Eq, PartialEq)]
+pub enum ConsoleMsg {
+	RequestShutdown
+}
 
 fn main() {
-	println!("{}", CLEAR_TERM);
-	println!("####################");
 	println!("# Hyperlite v{} #", env!("CARGO_PKG_VERSION"));
-	println!("####################");
-
 	early_boot();
 	flex_on_user();
-	spawn_child();
-	wait_for_user();
+	// spawn_child();
+
+	let (console_tx,console_rx) =
+		mpsc::channel::<ConsoleMsg>();
+	let console_handler = console::init(console_tx);
+	main_loop(console_rx);
+	console_handler.join().expect("Thread should rejoin before shutdown");
 	graceful_shutdown();
 }
 
-fn wait_for_user() {
-	println!("[?] Press Enter to power-off.");
-	let mut input = String::new();
-	std::io::stdin()
-		.read_line(&mut input)
-		.expect("[!] Failed to read input");
+fn main_loop(recv: mpsc::Receiver<ConsoleMsg>){
+	loop {
+		match recv.try_recv() {
+			Ok(msg) => {
+				if msg == ConsoleMsg::RequestShutdown {
+					return
+				}
+			}
+
+			Err(mpsc::TryRecvError::Empty) => {
+				std::thread::sleep(Duration::from_secs(1));
+			}
+
+			Err(mpsc::TryRecvError::Disconnected) => {
+				println!("[!] Console disconnected... powering off");
+				return
+			}
+		}
+	}
 }
 
 fn early_boot() {
